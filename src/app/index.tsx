@@ -1,98 +1,190 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import ComentarioCard from "@/components/Comentario";
+import { Link } from "expo-router";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const COMENTARIOS = [
+  {
+    id: "1",
+    autor: "Lucas",
+    nota: 5,
+    texto: "Produto excelente, superou as expectativas",
+  },
+  { id: "2", autor: "Leo", nota: 3, texto: "Produto mediano" },
+  { id: "3", autor: "Marcola", nota: 4, texto: "Produto nogger" },
+  {
+    id: "4",
+    autor: "Maniaco do Parque",
+    nota: 5,
+    texto: "Produto excelente, superou as expectativas",
+  },
+];
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function Index() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <ScrollView style={style.container}>
+      <View style={style.header}>
+        <Text style={style.headerText}> Mercado Livre</Text>
+      </View>
+      <Image
+        style={style.imagemProduto}
+        source={{
+          uri: "https://www.apple.com/v/macbook-pro/ax/images/overview/welcome/hero_endframe__fwev9ebh42mq_xlarge.jpg",
+        }}
+      />
+      <Text style={style.produtoNome}>MacBook 14 MS - Apple</Text>
+      <Text style={style.produtoPreco}>R$ 21,189,90</Text>
+
+      <TouchableOpacity style={style.btnComprar}>
+        <Text style={style.btnText}>Comprar Agora</Text>
+      </TouchableOpacity>
+
+      <Text style={style.descriptionTitle}>Descrição</Text>
+      <Text style={style.description}>
+        O MacBook Pro de 14 polegadas com chip M5 é um notebook profissional da
+        Apple voltado para alto desempenho, eficiência energética e recursos
+        avançados de inteligência artificial
+      </Text>
+      <View style={style.separator}></View>
+
+    <Link href={"/vendedor"} asChild>
+      <TouchableOpacity style={style.sellerCard}>
+        <Image
+          style={style.sellerAvatar}
+          source={require("@/assets/images/watermarked_img_13023633036407527991.jpg")
+          }
+        />
+        <View>
+          <Text style={style.sellerLabel}>Vendedor</Text>
+          <Text style={style.sellerName}>John Porkuai</Text>
+        </View>
+      </TouchableOpacity>
+    </Link>
+
+      <View style={style.separator}></View>
+      <Text style={style.comentarioTitle}>Comentarios</Text>
+
+      <FlatList
+        scrollEnabled={false}
+        data={COMENTARIOS}
+        renderItem={({ item }) => (
+          <ComentarioCard
+            autor={item.autor}
+            nota={item.nota}
+            texto={item.texto}
+          />
+        )}
+      />
+    </ScrollView>
   );
 }
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+const style = StyleSheet.create({
+  imagemProduto: {
+    width: "100%",
+    height: 240,
+  },
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
-
-const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#fff",
+    width: "100%",
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+
+  header: {
+    backgroundColor: "#ffe600",
+    alignItems: "center",
+    paddingTop: 30,
+    paddingBottom: 12,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+
+  headerText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 18,
   },
-  title: {
-    textAlign: 'center',
+
+  produtoNome: {
+    fontSize: 18,
+    fontWeight: "medium",
+    marginTop: 10, //Distancia da imagem
+    marginBottom: 8,
+    paddingHorizontal: 10,
   },
-  code: {
-    textTransform: 'uppercase',
+
+  produtoPreco: {
+    fontSize: 28,
+    fontWeight: "normal",
+    marginBottom: 24, //Distancia do botão comprar
+    paddingHorizontal: 10,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  btnComprar: {
+    backgroundColor: "#ffe600",
+    borderRadius: 8,
+    paddingVertical: 14,
+    marginHorizontal: 10,
+    alignItems: "center",
+  },
+
+  btnText: {
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+
+  descriptionTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 8,
+    paddingHorizontal: 15,
+    marginTop: 20,
+  },
+
+  description: {
+    fontSize: 14,
+    paddingHorizontal: 15,
+  },
+
+  separator: {
+    height: 1,
+    backgroundColor: "#000",
+    marginVertical: 100,
+  },
+  comentarioTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 8,
+    paddingHorizontal: 15,
+  },
+  sellerCard: {
+    flexDirection: "row",
+    alignContent: "center",
+    backgroundColor: "#FAFAFA",
+    borderRadius: 10,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#eee",
+    marginHorizontal: 15,
+  },
+  sellerName: {
+    fontSize: 15,
+    fontWeight: 700,
+  },
+  sellerAvatar: {
+    height: 46,
+    width: 46,
+    borderRadius: 23,
+    marginRight: 12,
+  },
+  sellerLabel: {
+    fontSize: 12,
+    color: "#888",
   },
 });
